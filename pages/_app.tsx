@@ -19,8 +19,8 @@ function App({ Component, pageProps }: AppProps) {
             <ThemeProvider theme={appTheme}>
                 <SnackbarProvider
                     anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
+                        vertical: "bottom",
+                        horizontal: "center",
                     }}
                 >
                     <DialogProvider>
