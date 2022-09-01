@@ -11,6 +11,8 @@ export const Root = styled.div`
     left: 0;
     right: 0;
 
+    z-index: 100;
+
     display: flex;
 
     ${Mobile} {
@@ -22,7 +24,7 @@ export const Root = styled.div`
     }
 `;
 
-export const Title = styled(Typography)<{ component: "a"; href: string }>`
+export const Title = styled(Typography)<{ component: "a" }>`
     ${Mobile} {
         font-size: 1.5rem;
     }

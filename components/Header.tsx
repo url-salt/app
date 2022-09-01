@@ -16,7 +16,6 @@ export default class Header extends React.Component<HeaderProps, HeaderStates> {
                     <Title
                         color="inherit"
                         component="a"
-                        href="/"
                         variant="h1"
                         fontSize="2rem"
                         fontWeight={900}
