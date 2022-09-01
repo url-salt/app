@@ -12,4 +12,12 @@ export const appTheme = createTheme({
     typography: {
         fontFamily: '"SUIT Variable", sans-serif',
     },
+    components: {
+        MuiButton: {
+            defaultProps: {
+                variant: "contained",
+                disableElevation: true,
+            },
+        },
+    },
 });

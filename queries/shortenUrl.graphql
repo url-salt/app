@@ -1,0 +1,10 @@
+mutation shortenUrl($url: String!) {
+    shortenUrl(url: $url) {
+        id
+        originalUrl
+        uniqueId
+        createdAt
+        updatedAt
+        url
+    }
+}

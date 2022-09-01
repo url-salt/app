@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import { SnackbarProvider } from "notistack";
 
 import { ThemeProvider } from "@mui/material";
 
@@ -8,6 +9,7 @@ import { useApollo } from "@apollo/lib";
 import Layout from "@components/Layout";
 
 import { appTheme } from "@styles/theme";
+import DialogProvider from "@components/dialog/Provider";
 
 function App({ Component, pageProps }: AppProps) {
     const apolloClient = useApollo(pageProps);
@@ -15,9 +17,18 @@ function App({ Component, pageProps }: AppProps) {
     return (
         <ApolloProvider client={apolloClient}>
             <ThemeProvider theme={appTheme}>
-                <Layout>
-                    <Component {...pageProps} />
-                </Layout>
+                <SnackbarProvider
+                    anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                    }}
+                >
+                    <DialogProvider>
+                        <Layout>
+                            <Component {...pageProps} />
+                        </Layout>
+                    </DialogProvider>
+                </SnackbarProvider>
             </ThemeProvider>
         </ApolloProvider>
     );
