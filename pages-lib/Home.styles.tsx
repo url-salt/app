@@ -1,9 +1,11 @@
 import styled from "@emotion/styled";
-import { ButtonBase } from "@mui/material";
+import { ButtonBase, Typography } from "@mui/material";
+
+import { Mobile } from "@styles/utils";
 
 export const Root = styled.div`
     margin: 0;
-    padding: 0;
+    padding: ${({ theme }) => theme.spacing(0, 2)};
 
     position: relative;
 `;
@@ -84,5 +86,13 @@ export const PrettyBox = styled(ButtonBase)`
         display: block;
 
         opacity: 0.5;
+    }
+`;
+
+export const Title = styled(Typography)`
+    font-size: 4rem;
+
+    ${Mobile} {
+        font-size: 2rem;
     }
 `;

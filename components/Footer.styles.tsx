@@ -10,6 +10,8 @@ export const Root = styled.footer`
 
     background-color: #fafafa;
 
+    flex: 0 0 auto;
+
     a {
         color: inherit;
     }

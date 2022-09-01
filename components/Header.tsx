@@ -1,7 +1,9 @@
 import React from "react";
 import Link from "next/link";
 
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+
+import { Root, Title } from "@components/Header.styles";
 
 export interface HeaderProps {}
 export interface HeaderStates {}
@@ -9,9 +11,9 @@ export interface HeaderStates {}
 export default class Header extends React.Component<HeaderProps, HeaderStates> {
     public render() {
         return (
-            <Box p={8} display="flex" position="absolute" zIndex={11} top={0} left={0} right={0}>
+            <Root>
                 <Link passHref href="/">
-                    <Typography
+                    <Title
                         color="inherit"
                         component="a"
                         href="/"
@@ -21,10 +23,10 @@ export default class Header extends React.Component<HeaderProps, HeaderStates> {
                         sx={{ textDecoration: "none" }}
                     >
                         usalt 🧂
-                    </Typography>
+                    </Title>
                 </Link>
                 <Box flex="1 1 auto" />
-            </Box>
+            </Root>
         );
     }
 }

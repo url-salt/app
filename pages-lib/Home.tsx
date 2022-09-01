@@ -13,7 +13,7 @@ import { withDialog, WithDialogProps } from "@components/dialog/withDialog";
 import { shortenUrlAction } from "@actions/shortenUrl";
 import { HomePageContent, ShortenedEntry } from "@utils/types";
 
-import { Pattern, PrettyBox, Root } from "@pages/Home.styles";
+import { Pattern, PrettyBox, Root, Title } from "@pages/Home.styles";
 
 export interface HomePageProps extends WithDialogProps {
     content: HomePageContent;
@@ -88,21 +88,14 @@ class HomePage extends React.Component<HomePageProps, HomePageStates> {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <Typography
-                        variant="h2"
-                        lineHeight={1.1}
-                        fontSize="4rem"
-                        fontWeight={900}
-                        letterSpacing="0.001em"
-                        textAlign="center"
-                    >
+                    <Title variant="h2" lineHeight={1.1} fontWeight={900} letterSpacing="0.001em" textAlign="center">
                         🧂
                         <br />
                         <br />
                         The best url shortener
                         <br />
                         you{"'"}ve never seen before
-                    </Typography>
+                    </Title>
                     <Box mt={12} display="flex" flexDirection="column" alignItems="stretch">
                         <ShortenerForm
                             onSubmit={this.handleSubmit}
