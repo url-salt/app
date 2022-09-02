@@ -59,12 +59,13 @@ class HomePage extends React.Component<HomePageProps, HomePageStates> {
             this.props.enqueueSnackbar("The url you input was not valid url.", {
                 variant: "error",
             });
+
             return;
         }
 
         this.props.setBackdropVisibility(true);
 
-        const entry = await shortenUrlAction(this.props.apolloClient, value.url);
+        const entry = await shortenUrlAction(this.props.apolloClient, value.url, value.settings);
         this.setState(prevState => ({
             entries: [entry, ...prevState.entries],
         }));

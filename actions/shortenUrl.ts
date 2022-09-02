@@ -1,11 +1,14 @@
 import { ApolloClient } from "@apollo/client";
 import { ShortenUrlDocument, ShortenUrlMutation, ShortenUrlMutationVariables } from "@apollo/queries";
 
-export async function shortenUrlAction(client: ApolloClient<object>, url: string) {
+import { SettingsValue } from "@utils/types";
+
+export async function shortenUrlAction(client: ApolloClient<object>, url: string, settings: SettingsValue | null) {
     const { data } = await client.mutate<ShortenUrlMutation, ShortenUrlMutationVariables>({
         mutation: ShortenUrlDocument,
         variables: {
             url,
+            settings,
         },
     });
 

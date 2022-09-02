@@ -22,7 +22,8 @@
             "@utils/*": ["./utils/*"],
             "@apollo/lib": ["./apollo/index.ts"],
             "@apollo/queries": ["./queries/index.tsx"],
-            "@actions/*": ["./actions/*"]
+            "@actions/*": ["./actions/*"],
+            "@constants/*": ["./constants/*"]
         }
     },
     "include": ["next-env.d.ts", "emotion.d.ts", "global.d.ts", "**/*.ts", "**/*.tsx"],

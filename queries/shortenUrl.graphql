@@ -1,5 +1,5 @@
-mutation shortenUrl($url: String!) {
-    shortenUrl(url: $url) {
+mutation shortenUrl($url: String!, $settings: ShortenerSettings) {
+    shortenUrl(url: $url, settings: $settings) {
         id
         originalUrl
         uniqueId
