@@ -39,3 +39,6 @@ next-env.d.ts
 /queries/index.d.ts
 
 /package.json.tpl
+
+# Sentry
+.sentryclirc
