@@ -16,8 +16,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG SENTRY_AUTH_TOKEN
-ENV SENTRY_AUTH_TOKEN_VALUE=$SENTRY_AUTH_TOKEN
+ARG SENTRY_AUTH_TOKEN_VALUE
+ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN_VALUE
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
