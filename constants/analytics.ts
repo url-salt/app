@@ -1,0 +1,1 @@
+export const VISIT_LOG_MINIMAL_ROW_COUNT = 10;

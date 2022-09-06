@@ -1,0 +1,17 @@
+query visitLogs($code: String!, $take: Int!, $before: Int) {
+    url(id: $code) {
+        id
+        visitLogs(take: $take, before: $before) {
+            id
+            os
+            osVersion
+            browser
+            browserVersion
+            country
+            countryCode
+            createdAt
+            ip
+            isBot
+        }
+    }
+}

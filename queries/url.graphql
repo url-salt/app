@@ -2,6 +2,7 @@ query url($id: String!) {
     url(id: $id) {
         id
         url
+        uniqueId
         originalUrl
         title
         description

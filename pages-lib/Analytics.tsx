@@ -1,29 +1,37 @@
 import React from "react";
+import { format } from "date-fns";
 
-import {
-    Box,
-    Button,
-    Container,
-    Grid,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Typography } from "@mui/material";
+
+import VisitLogTable from "@components/VisitLogTable";
+
+import { ApolloClient } from "@apollo/client";
 
 import { Root } from "@pages/Analytics.styles";
 
-import { Nullable, UrlEntry } from "@utils/types";
+import { getVisitLogsAction } from "@actions/getVisitLogs";
+import { VISIT_LOG_MINIMAL_ROW_COUNT } from "@constants/analytics";
+
+import { Nullable, UrlEntry, VisitLog } from "@utils/types";
 
 export interface AnalyticsPageProps {
     urlEntry: UrlEntry;
+    client: ApolloClient<object>;
 }
-export interface AnalyticsPageStates {}
+export interface AnalyticsPageStates {
+    visitLogs: VisitLog[] | null;
+}
 
 export default class AnalyticsPage extends React.Component<AnalyticsPageProps, AnalyticsPageStates> {
+    public state: AnalyticsPageStates = {
+        visitLogs: null,
+    };
+
+    private handleLoadMore = async (lastItem: Nullable<VisitLog>) => {
+        const { client, urlEntry } = this.props;
+        return await getVisitLogsAction(client, urlEntry.uniqueId, VISIT_LOG_MINIMAL_ROW_COUNT, lastItem?.id);
+    };
+
     private renderGridItem = (title: string, content: Nullable<string | number>) => {
         return (
             <Grid item xs={4}>
@@ -80,10 +88,10 @@ export default class AnalyticsPage extends React.Component<AnalyticsPageProps, A
                                 <Grid item xs={4}></Grid>
                                 {this.renderGridItem("Hits", 0)}
                                 {this.renderGridItem("Recent visit at", 0)}
-                                {this.renderGridItem("Created at", urlEntry.createdAt)}
+                                {this.renderGridItem("Created at", format(urlEntry.createdAt, "yyyy-MM-dd hh:mm:ss"))}
                             </Grid>
                         </Box>
-                        <Box>
+                        <Box mb={4}>
                             <Typography
                                 display="block"
                                 variant="h5"
@@ -94,21 +102,7 @@ export default class AnalyticsPage extends React.Component<AnalyticsPageProps, A
                             >
                                 Recent visits
                             </Typography>
-                            <TableContainer component={Box} borderRadius="4px" border="1px solid #ccc">
-                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>IP</TableCell>
-                                            <TableCell align="right">Country (Country Code)</TableCell>
-                                            <TableCell align="right">Time</TableCell>
-                                            <TableCell align="right">Is Bot?</TableCell>
-                                            <TableCell align="right">Browser</TableCell>
-                                            <TableCell align="right">OS</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody></TableBody>
-                                </Table>
-                            </TableContainer>
+                            <VisitLogTable loadMore={this.handleLoadMore} minimumRows={10} />
                         </Box>
                     </Root>
                 </Box>

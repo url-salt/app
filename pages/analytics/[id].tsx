@@ -1,5 +1,7 @@
 import type { NextPage } from "next";
 
+import { useApolloClient } from "@apollo/client";
+
 import AnalyticsPage from "@pages/Analytics";
 
 import { installRouteMiddleware } from "@utils/routes/installRouteMiddleware";
@@ -11,7 +13,9 @@ interface AnalyticsRouteProps extends BasePageProps {
 }
 
 const AnalyticsRoute: NextPage<AnalyticsRouteProps> = ({ urlEntry }) => {
-    return <AnalyticsPage urlEntry={urlEntry} />;
+    const client = useApolloClient();
+
+    return <AnalyticsPage client={client} urlEntry={urlEntry} />;
 };
 
 export const getServerSideProps = installRouteMiddleware<AnalyticsRouteProps>({
