@@ -7,3 +7,10 @@ export const TableRow = styled(MuiTableRow)`
         border: 0;
     }
 `;
+
+export const BorderlessRow = styled(MuiTableRow)`
+    td,
+    th {
+        border: 0;
+    }
+`;

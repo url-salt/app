@@ -15,7 +15,7 @@ import {
     TableRow as MuiTableRow,
 } from "@mui/material";
 
-import { TableRow } from "@components/VisitLogTable.styles";
+import { BorderlessRow, TableRow } from "@components/VisitLogTable.styles";
 
 import { Nullable, VisitLog } from "@utils/types";
 
@@ -97,9 +97,11 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
             </TableRow>
         );
     };
-    private renderPlaceholder = (index: number, children: React.ReactNode = <Skeleton />) => {
+    private renderPlaceholder = (index: number, children: React.ReactNode = <Skeleton />, withoutBorder?: boolean) => {
+        const RowComponent = withoutBorder ? BorderlessRow : TableRow;
+
         return (
-            <TableRow>
+            <RowComponent>
                 <TableCell width="16.66%">{children}</TableCell>
                 <TableCell width="16.66%" align="right">
                     {children}
@@ -116,7 +118,7 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
                 <TableCell width="16.66%" align="right">
                     {children}
                 </TableCell>
-            </TableRow>
+            </RowComponent>
         );
     };
     private renderInView: IntersectionObserverProps["children"] = ({ ref }) => {
@@ -148,8 +150,8 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
             children.push(...items.map(this.renderItem));
 
             const remainCount = minimumRows - children.length;
-            for (let i = 0; i < remainCount; ++i) {
-                children.push(this.renderPlaceholder(i, <Box sx={{ userSelect: "none" }}>&nbsp;</Box>));
+            for (let i = 0; i < remainCount; i++) {
+                children.push(this.renderPlaceholder(i, <Box sx={{ userSelect: "none" }}>&nbsp;</Box>, true));
             }
 
             if (hasMore) {
