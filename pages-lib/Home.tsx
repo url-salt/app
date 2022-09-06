@@ -11,12 +11,11 @@ import ShortenerForm, { ShortenerFormValues } from "@components/forms/ShortenerF
 import { withDialog, WithDialogProps } from "@components/dialog/withDialog";
 
 import { shortenUrlAction } from "@actions/shortenUrl";
-import { HomePageContent, ShortenedEntry } from "@utils/types";
+import { ShortenedEntry } from "@utils/types";
 
 import { Pattern, PrettyBox, Root, Title } from "@pages/Home.styles";
 
 export interface HomePageProps extends WithDialogProps {
-    content: HomePageContent;
     apolloClient: ApolloClient<object>;
 }
 export interface HomePageStates {
@@ -52,6 +51,18 @@ class HomePage extends React.Component<HomePageProps, HomePageStates> {
             variant: "success",
         });
     };
+    private handleAnalyticsBoxClick = async () => {
+        const latestEntries = this.state.entries[0];
+        if (!latestEntries) {
+            return;
+        }
+
+        await navigator.clipboard.writeText(`${latestEntries.url}/analytics`);
+        this.props.enqueueSnackbar("analysis URL copied!", {
+            variant: "success",
+        });
+    };
+
     private handleSubmit = async (value: ShortenerFormValues) => {
         try {
             await yup.string().url().validate(value.url);
@@ -115,6 +126,20 @@ class HomePage extends React.Component<HomePageProps, HomePageStates> {
                                     <Tooltip title="Click to copy">
                                         <PrettyBox role="button" tabIndex={-1} onClick={this.handleResultBoxClick}>
                                             <span>{entries[0].url}</span>
+                                            <Box flex="1 1 auto" />
+                                            <ContentPasteIcon />
+                                        </PrettyBox>
+                                    </Tooltip>
+                                    <Box mt={4}>
+                                        <Typography variant="body1" fontWeight={600}>
+                                            ... or you can watch realtime analysis of your url here:
+                                        </Typography>
+                                    </Box>
+                                    <Tooltip title="Click to copy">
+                                        <PrettyBox role="button" tabIndex={-1} onClick={this.handleAnalyticsBoxClick}>
+                                            <span>
+                                                {entries[0].url}/<span>analytics</span>
+                                            </span>
                                             <Box flex="1 1 auto" />
                                             <ContentPasteIcon />
                                         </PrettyBox>

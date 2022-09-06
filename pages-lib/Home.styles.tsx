@@ -63,7 +63,7 @@ export const PrettyBox = styled(ButtonBase)`
     text-align: left;
 
     color: white;
-    background: #081229;
+    background: #262a33;
 
     cursor: pointer;
 
@@ -86,6 +86,16 @@ export const PrettyBox = styled(ButtonBase)`
         display: block;
 
         opacity: 0.5;
+    }
+
+    span {
+        font-family: "Consolas", monospace;
+    }
+
+    > span:first-of-type {
+        > span {
+            color: #0fa8cd;
+        }
     }
 `;
 

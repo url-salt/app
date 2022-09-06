@@ -1,7 +1,0 @@
-query homePageContent {
-    helloWorld
-    latestStartedTime {
-        id
-        startedAt
-    }
-}

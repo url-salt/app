@@ -32,9 +32,7 @@ export default class ShortenerSettingsDialog extends React.PureComponent<
 
     public componentDidUpdate(prevProps: Readonly<ShortenerSettingsDialogProps>) {
         if (this.props.open !== prevProps.open && this.props.open) {
-            this.setState({
-                value: this.props.value || DEFAULT_VALUE,
-            });
+            this.setState({ value: this.props.value || DEFAULT_VALUE });
         }
     }
 
@@ -73,6 +71,7 @@ export default class ShortenerSettingsDialog extends React.PureComponent<
     public render() {
         const { open, onClose, onClear } = this.props;
         const { value } = this.state;
+        const changed = !_.eq(this.state.value, DEFAULT_VALUE);
 
         return (
             <Dialog
@@ -120,19 +119,22 @@ export default class ShortenerSettingsDialog extends React.PureComponent<
                                 size="small"
                                 fullWidth
                                 value={value.description}
+                                sx={{ mb: 2 }}
                                 onChange={this.handleInputChange("description")}
                             />
                         </label>
                     </DialogContent>
                     <Box p={2} borderTop="1px solid #ccc" display="flex" justifyContent="flex-end">
-                        <Button variant="text" color="error" onClick={onClear}>
+                        <Button variant="text" color="error" onClick={onClear} disabled={!changed}>
                             Clear
                         </Button>
                         <Box flex="1 1 auto" />
                         <Button variant="text" sx={{ mr: 1 }} onClick={onClose}>
                             Close
                         </Button>
-                        <Button onClick={this.handleSubmit}>Apply</Button>
+                        <Button onClick={this.handleSubmit} disabled={!changed}>
+                            Apply
+                        </Button>
                     </Box>
                 </Root>
             </Dialog>

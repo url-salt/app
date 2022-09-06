@@ -5,30 +5,24 @@ import { useApolloClient } from "@apollo/client";
 import HomePage from "@pages/Home";
 
 import { installRouteMiddleware } from "@utils/routes/installRouteMiddleware";
-import { BasePageProps, HomePageContent } from "@utils/types";
+import { BasePageProps } from "@utils/types";
 
-interface HomePageProps extends BasePageProps {
-    homePageContent: HomePageContent;
-}
+interface HomePageProps extends BasePageProps {}
 
-const Home: NextPage<HomePageProps> = ({ homePageContent }) => {
+const Home: NextPage<HomePageProps> = () => {
     const apolloClient = useApolloClient();
 
-    return <HomePage content={homePageContent} apolloClient={apolloClient} />;
+    return <HomePage apolloClient={apolloClient} />;
 };
 
-export const getServerSideProps = installRouteMiddleware<HomePageProps>({
-    needHomePageContent: true,
-})(async ({ homePageContent }) => {
-    if (!homePageContent) {
-        return {
-            notFound: true,
-        };
-    }
-
+export const getServerSideProps = installRouteMiddleware<HomePageProps>({})(async () => {
     return {
         props: {
-            homePageContent,
+            layoutProps: {
+                headerProps: {
+                    float: true,
+                },
+            },
         },
     };
 });

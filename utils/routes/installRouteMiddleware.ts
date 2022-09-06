@@ -1,17 +1,23 @@
 import type { GetServerSideProps, GetServerSidePropsResult } from "next";
 import type { ApolloClient } from "@apollo/client";
 
-import { BasePageProps, HomePageContent, Nullable } from "@utils/types";
-import { getHomePageContentAction } from "actions/getHomePageContent";
 import { initializeApollo } from "@apollo/lib";
 
-interface Options {
-    needHomePageContent?: boolean;
+import { BasePageProps, Nullable, UrlEntry } from "@utils/types";
+import { getUrlEntryAction } from "@actions/getUrlEntry";
+
+export type OptionValue<T, TProps extends BasePageProps> =
+    | false
+    | Nullable<T>
+    | ((...args: Parameters<GetServerSideProps<TProps>>) => Nullable<T> | Promise<Nullable<T>>);
+
+interface Options<TProps extends BasePageProps> {
+    needUrlEntry: OptionValue<string, TProps>;
 }
 
 interface Data {
     apolloClient: ApolloClient<object>;
-    homePageContent: Nullable<HomePageContent>;
+    urlEntry: Nullable<UrlEntry>;
 }
 
 type RouteMiddlewareClient<TProps extends BasePageProps> = (
@@ -19,10 +25,25 @@ type RouteMiddlewareClient<TProps extends BasePageProps> = (
     ...args: Parameters<GetServerSideProps<TProps>>
 ) => Promise<GetServerSidePropsResult<TProps>>;
 
+async function acquireOptionValue<TValue extends string | boolean | number, TProps extends BasePageProps>(
+    target: Nullable<OptionValue<TValue, TProps>>,
+    ...params: Parameters<GetServerSideProps<TProps>>
+) {
+    if (!target) {
+        return false;
+    }
+
+    if (typeof target === "function") {
+        return target(...params);
+    }
+
+    return target;
+}
+
 export function installRouteMiddleware<TProps extends BasePageProps>(
-    options?: Options,
+    options?: Partial<Options<TProps>>,
 ): (client: RouteMiddlewareClient<TProps>) => GetServerSideProps<TProps> {
-    const { needHomePageContent = false } = options || {};
+    const { needUrlEntry = false } = options || {};
 
     return client => {
         return async params => {
@@ -30,12 +51,13 @@ export function installRouteMiddleware<TProps extends BasePageProps>(
             const apolloClient = initializeApollo({ headers: req.headers });
 
             try {
-                let homePageContent: Nullable<HomePageContent> = null;
-                if (needHomePageContent) {
-                    homePageContent = await getHomePageContentAction(apolloClient);
+                let urlEntry: Nullable<UrlEntry> = null;
+                const targetUrlEntryId = await acquireOptionValue(needUrlEntry, params);
+                if (targetUrlEntryId) {
+                    urlEntry = await getUrlEntryAction(apolloClient, targetUrlEntryId);
                 }
 
-                return client({ apolloClient, homePageContent }, params);
+                return client({ apolloClient, urlEntry }, params);
             } catch (e) {
                 return { notFound: true };
             }

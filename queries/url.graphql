@@ -1,0 +1,10 @@
+query url($id: String!) {
+    url(id: $id) {
+        id
+        url
+        originalUrl
+        title
+        description
+        createdAt
+    }
+}

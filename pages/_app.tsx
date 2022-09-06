@@ -31,7 +31,7 @@ function App({ Component, pageProps }: AppProps) {
                         }}
                     >
                         <DialogProvider>
-                            <Layout>
+                            <Layout {...pageProps.layoutProps}>
                                 <Component {...pageProps} />
                             </Layout>
                         </DialogProvider>
