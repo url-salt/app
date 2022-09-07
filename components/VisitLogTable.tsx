@@ -66,6 +66,7 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
         this.setState(prevState => ({
             items: [...(prevState.items || []), ...newItems],
             hasMore: newItems.length >= minimumRows,
+            loading: false,
         }));
     };
 
@@ -76,22 +77,22 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
 
         return (
             <TableRow key={item.id}>
-                <TableCell width="16.66%">
+                <TableCell width="18%">
                     <Typography fontSize="inherit">{format(item.createdAt, "yyyy-MM-dd hh:mm:ss")}</Typography>
                 </TableCell>
-                <TableCell width="16.66%" align="right">
+                <TableCell width="18%" align="right">
                     {item.ip}
                 </TableCell>
-                <TableCell width="16.66%" align="right">
+                <TableCell width="18%" align="right">
                     {country}
                 </TableCell>
-                <TableCell width="16.66%" align="right">
+                <TableCell width="18%" align="right">
                     {browser}
                 </TableCell>
-                <TableCell width="16.66%" align="right">
+                <TableCell width="18%" align="right">
                     {os}
                 </TableCell>
-                <TableCell width="16.66%" align="right">
+                <TableCell width="10%" align="right">
                     {item.isBot ? "Yes" : "No"}
                 </TableCell>
             </TableRow>
@@ -101,21 +102,21 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
         const RowComponent = withoutBorder ? BorderlessRow : TableRow;
 
         return (
-            <RowComponent>
-                <TableCell width="16.66%">{children}</TableCell>
-                <TableCell width="16.66%" align="right">
+            <RowComponent key={index}>
+                <TableCell width="18%">{children}</TableCell>
+                <TableCell width="18%" align="right">
                     {children}
                 </TableCell>
-                <TableCell width="16.66%" align="right">
+                <TableCell width="18%" align="right">
                     {children}
                 </TableCell>
-                <TableCell width="16.66%" align="right">
+                <TableCell width="18%" align="right">
                     {children}
                 </TableCell>
-                <TableCell width="16.66%" align="right">
+                <TableCell width="18%" align="right">
                     {children}
                 </TableCell>
-                <TableCell width="16.66%" align="right">
+                <TableCell width="10%" align="right">
                     {children}
                 </TableCell>
             </RowComponent>
