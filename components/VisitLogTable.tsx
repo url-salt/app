@@ -11,8 +11,8 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    Typography,
     TableRow as MuiTableRow,
+    Typography,
 } from "@mui/material";
 
 import { BorderlessRow, TableRow } from "@components/VisitLogTable.styles";
@@ -22,18 +22,23 @@ import { Nullable, VisitLog } from "@utils/types";
 export interface VisitLogTableProps {
     minimumRows: number;
     loadMore(lastItem: Nullable<VisitLog>): Promise<VisitLog[]>;
+    renderSubscription(newLogCallback: (log: VisitLog) => void): React.ReactNode;
 }
 export interface VisitLogTableStates {
     hasMore: boolean;
     items: VisitLog[] | null;
     loading: boolean;
+    loaderInView: boolean;
 }
 
 export default class VisitLogTable extends React.Component<VisitLogTableProps, VisitLogTableStates> {
+    private interval: NodeJS.Timeout | null = null;
+
     public state: VisitLogTableStates = {
         hasMore: false,
         items: null,
         loading: true,
+        loaderInView: false,
     };
 
     public async componentDidMount() {
@@ -45,12 +50,18 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
             items: initialItems,
             loading: false,
         });
+
+        if (!this.interval) {
+            this.interval = setInterval(() => {
+                this.fetchNextItems();
+            }, 1000);
+        }
     }
 
-    private handleInViewChange = async (inView: boolean) => {
+    public fetchNextItems = async () => {
         const { loadMore, minimumRows } = this.props;
-        const { loading, hasMore, items } = this.state;
-        if (loading || !hasMore || !inView || !items) {
+        const { loading, hasMore, items, loaderInView } = this.state;
+        if (loading || !hasMore || !loaderInView || !items) {
             return;
         }
 
@@ -67,6 +78,15 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
             items: [...(prevState.items || []), ...newItems],
             hasMore: newItems.length >= minimumRows,
             loading: false,
+        }));
+    };
+
+    private handleInViewChange = async (inView: boolean) => {
+        this.setState({ loaderInView: inView });
+    };
+    private handleSubscriptionData = (log: VisitLog) => {
+        this.setState(prevState => ({
+            items: [log, ...(prevState.items || [])],
         }));
     };
 
@@ -129,6 +149,17 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
             </Box>
         );
     };
+    private renderEmpty = () => {
+        return (
+            <BorderlessRow key={-1}>
+                <TableCell colSpan={6}>
+                    <Typography color="#aaa" textAlign="center">
+                        No one has visited this url yet
+                    </Typography>
+                </TableCell>
+            </BorderlessRow>
+        );
+    };
     private renderLoader = () => {
         return (
             <TableRow key={-1}>
@@ -139,13 +170,26 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
         );
     };
     public render() {
-        const { minimumRows } = this.props;
+        const { minimumRows, renderSubscription } = this.props;
         const { items, hasMore } = this.state;
 
         const children: React.ReactNode[] = [];
         if (!items) {
             for (let i = 0; i < minimumRows; ++i) {
                 children.push(this.renderPlaceholder(i));
+            }
+        } else if (!items.length) {
+            const halfCount = Math.floor(minimumRows / 2);
+            for (let i = 0; i < halfCount; i++) {
+                children.push(this.renderPlaceholder(i, <Box sx={{ userSelect: "none" }}>&nbsp;</Box>, true));
+            }
+
+            children.push(this.renderEmpty());
+
+            for (let i = 0; i < halfCount; i++) {
+                children.push(
+                    this.renderPlaceholder(children.length + i, <Box sx={{ userSelect: "none" }}>&nbsp;</Box>, true),
+                );
             }
         } else {
             children.push(...items.map(this.renderItem));
@@ -161,21 +205,24 @@ export default class VisitLogTable extends React.Component<VisitLogTableProps, V
         }
 
         return (
-            <TableContainer component={Box} borderRadius="4px" border="1px solid #ccc">
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <MuiTableRow>
-                            <TableCell>Time</TableCell>
-                            <TableCell align="right">IP</TableCell>
-                            <TableCell align="right">Country</TableCell>
-                            <TableCell align="right">Browser</TableCell>
-                            <TableCell align="right">OS</TableCell>
-                            <TableCell align="right">Is Bot?</TableCell>
-                        </MuiTableRow>
-                    </TableHead>
-                    <TableBody>{children}</TableBody>
-                </Table>
-            </TableContainer>
+            <>
+                <TableContainer component={Box} borderRadius="4px" border="1px solid #ccc">
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                            <MuiTableRow>
+                                <TableCell>Time</TableCell>
+                                <TableCell align="right">IP</TableCell>
+                                <TableCell align="right">Country</TableCell>
+                                <TableCell align="right">Browser</TableCell>
+                                <TableCell align="right">OS</TableCell>
+                                <TableCell align="right">Is Bot?</TableCell>
+                            </MuiTableRow>
+                        </TableHead>
+                        <TableBody>{children}</TableBody>
+                    </Table>
+                </TableContainer>
+                {renderSubscription(this.handleSubscriptionData)}
+            </>
         );
     }
 }

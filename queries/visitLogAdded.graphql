@@ -1,0 +1,14 @@
+subscription visitLogAdded($uniqueId: String!) {
+    visitLogAdded(uniqueId: $uniqueId) {
+        id
+        os
+        osVersion
+        browser
+        browserVersion
+        country
+        countryCode
+        createdAt
+        ip
+        isBot
+    }
+}

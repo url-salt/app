@@ -33,6 +33,7 @@ type UrlEntry {
   updatedAt: Timestamp!
   url: String!
   visitLogs(take: Int!, before: Int): [VisitLog!]!
+  hits: Int!
 }
 
 type Query {
@@ -51,3 +52,7 @@ input ShortenerSettings {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+type Subscription {
+  visitLogAdded(uniqueId: String!): VisitLog
+}

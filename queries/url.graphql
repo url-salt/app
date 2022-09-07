@@ -5,7 +5,12 @@ query url($id: String!) {
         uniqueId
         originalUrl
         title
+        hits
         description
         createdAt
+        visitLogs(take: 1) {
+            id
+            createdAt
+        }
     }
 }

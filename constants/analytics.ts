@@ -1,1 +1,1 @@
-export const VISIT_LOG_MINIMAL_ROW_COUNT = 10;
+export const VISIT_LOG_MINIMAL_ROW_COUNT = 5;
