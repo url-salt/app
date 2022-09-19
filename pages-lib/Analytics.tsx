@@ -13,7 +13,12 @@ import { getVisitLogsAction } from "@actions/getVisitLogs";
 import { VISIT_LOG_MINIMAL_ROW_COUNT } from "@constants/analytics";
 
 import { Nullable, UrlEntry, VisitLog } from "@utils/types";
-import { VisitLogAddedComponent, VisitLogAddedComponentProps } from "@apollo/queries";
+import {
+    HitCountChangedComponent,
+    HitCountChangedComponentProps,
+    VisitLogAddedComponent,
+    VisitLogAddedComponentProps,
+} from "@apollo/queries";
 import memoizeOne from "memoize-one";
 
 export interface AnalyticsPageProps {
@@ -22,17 +27,27 @@ export interface AnalyticsPageProps {
 }
 export interface AnalyticsPageStates {
     visitLogs: VisitLog[] | null;
+    hitCount: number;
 }
 
 export default class AnalyticsPage extends React.Component<AnalyticsPageProps, AnalyticsPageStates> {
     public state: AnalyticsPageStates = {
         visitLogs: null,
+        hitCount: this.props.urlEntry.hits,
     };
 
+    private handleHitCountChanged: HitCountChangedComponentProps["onSubscriptionData"] = ({ subscriptionData }) => {
+        if (!subscriptionData.data?.hitCountChanged) {
+            return;
+        }
+
+        this.setState({
+            hitCount: subscriptionData.data.hitCountChanged,
+        });
+    };
     private handleSubscriptionData = memoizeOne(
         (callback: (log: VisitLog) => void): VisitLogAddedComponentProps["onSubscriptionData"] => {
             return ({ subscriptionData }) => {
-                console.info(subscriptionData);
                 if (!subscriptionData.data || !subscriptionData.data.visitLogAdded) {
                     return;
                 }
@@ -68,6 +83,7 @@ export default class AnalyticsPage extends React.Component<AnalyticsPageProps, A
     };
     public render() {
         const { urlEntry } = this.props;
+        const { hitCount } = this.state;
 
         return (
             <Container maxWidth="lg">
@@ -101,14 +117,13 @@ export default class AnalyticsPage extends React.Component<AnalyticsPageProps, A
                                 </Typography>
                             </Box>
                             <Box flex="1 1 auto" />
-                            <Button color="error">delete this</Button>
                         </Box>
                         <Box mb={12}>
                             <Grid container spacing={2}>
                                 {this.renderGridItem("Title", urlEntry.title)}
                                 {this.renderGridItem("Description", urlEntry.description)}
                                 <Grid item xs={4}></Grid>
-                                {this.renderGridItem("Hits", urlEntry.hits)}
+                                {this.renderGridItem("Hits", hitCount)}
                                 {this.renderGridItem(
                                     "Recent visit at",
                                     urlEntry.visitLogs.length > 0
@@ -136,6 +151,10 @@ export default class AnalyticsPage extends React.Component<AnalyticsPageProps, A
                                 renderSubscription={this.renderSubscription}
                                 loadMore={this.handleLoadMore}
                                 minimumRows={VISIT_LOG_MINIMAL_ROW_COUNT}
+                            />
+                            <HitCountChangedComponent
+                                variables={{ uniqueId: urlEntry.uniqueId }}
+                                onSubscriptionData={this.handleHitCountChanged}
                             />
                         </Box>
                     </Root>

@@ -55,4 +55,5 @@ scalar Upload
 
 type Subscription {
   visitLogAdded(uniqueId: String!): VisitLog
+  hitCountChanged(uniqueId: String!): Int!
 }

@@ -1,0 +1,3 @@
+subscription hitCountChanged($uniqueId: String!) {
+    hitCountChanged(uniqueId: $uniqueId)
+}
